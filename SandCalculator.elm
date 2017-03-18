@@ -42,15 +42,24 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ h4 [] [ text "How much do I need?" ]
-        , input [ type_ "text", onInput Length ] []
-        , input [ type_ "text", onInput Width ] []
-        , input [ type_ "text", onInput Depth ] []
+        [ h4 [] [ text "How Much Do I Need?" ]
+        , inputGroup "Length" "ft" Length
+        , inputGroup "Width" "ft" Width
+        , inputGroup "Depth" "in" Depth
         , viewResult (calculatePounds model)
         ]
 
 
-viewResult : Float -> Html Msg
+inputGroup : String -> String -> (String -> Msg) -> Html Msg
+inputGroup dimension unit msg =
+    div []
+        [ span [] [ text dimension ]
+        , input [ type_ "text", onInput msg ] []
+        , span [] [ text unit ]
+        ]
+
+
+viewResult : Int -> Html Msg
 viewResult pounds =
     let
         result =
@@ -62,7 +71,7 @@ viewResult pounds =
         h4 [] [ text result ]
 
 
-calculatePounds : Model -> Float
+calculatePounds : Model -> Int
 calculatePounds model =
     let
         l =
@@ -72,9 +81,9 @@ calculatePounds model =
             parseFloat model.width
 
         d =
-            parseFloat model.depth
+            parseFloat model.depth / 12
     in
-        l * w * d
+        round (l * w * d * 74)
 
 
 parseFloat : String -> Float

@@ -8,6 +8,8 @@ view model =
   div []
     [ h4 [] [ text "How much do I need?"]
     , input [ type_ "text", onInput Length] []
+    , input [ type_ "text", onInput Width] []
+    , input [ type_ "text", onInput Depth] []
     , viewResult (calculatePounds model)
     ]
 
@@ -19,7 +21,9 @@ viewResult number =
     h4 [] [ text result]
 
 calculatePounds model =
-  parseFloat model.length
+  (parseFloat model.length) *
+  (parseFloat model.width) *
+  (parseFloat model.depth)
 
 parseFloat string =
   String.toFloat string
@@ -36,11 +40,16 @@ update msg model =
   case msg of
     Length length ->
       { model | length = length }
+    Width width ->
+      { model | width = width}
+    Depth depth ->
+      { model | depth = depth}
 
-type Msg = Length String
+type Msg =
+  Length String | Width String | Depth String
 
 initialModel =
-  { length = "0", width = "", depth = ""}
+  { length = "", width = "", depth = ""}
 
 type alias Model =
   { length : String, width : String, depth : String}
